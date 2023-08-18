@@ -1,0 +1,55 @@
+.title-green {
+    color: #2F8735;
+    font-weight: 700;
+}
+
+.title-purple {
+    color: rgb(231, 18, 231);
+    font-weight: 700;
+}
+
+
+.container-checkbox {
+    display:inline-block;
+    text-align: center;
+}
+
+
+.checkbox-no-label {
+    position: unset!important;
+    margin-top: 0.6rem!important;
+}
+
+h6 {
+    font-size: 0.9rem;
+}
+
+.input-no-border {
+    display: inline-block;
+    width: 84%;
+    border: none;
+}
+
+.input-no-border-small {
+    width: 80%!important;
+}
+
+p {
+    font-size: 0.8rem;
+}
+
+
+label {
+    font-size: 0.8rem;
+
+}
+
+.capcha-container {
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+}
+
+textarea:focus, input:focus{
+    outline: none;
+}
