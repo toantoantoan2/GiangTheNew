@@ -307,10 +307,65 @@
 
 
             <!-- Modal Login -->
-            <div class="modal fade" id="login" tabindex="-1" aria-labelledby="exampleModalLabel"
+
+            <div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header" style="border-bottom: none;
+                    align-items: center;
+                    padding-bottom: 0px;
+                    justify-content: center;">
+                      <h5 class="modal-title" id="exampleModalLabel">ĐĂNG NHẬP</h5>
+                    </div>
+                    <div class="modal-body" style="font-size: 15px;">
+                        <form class="login login-form" method="post" action="" id="loginform"
+                        name="login">
+                        @csrf
+                        <p id="error" class="text-danger"></p>
+                        <div class="form-group">
+                          <label for="recipient-name" class="col-form-label">Tên đăng nhập hoặc email:</label>
+                          <input class="form-control" value="{{ Cookie::get('username') }}" name="username">
+                        </div>
+                        <div class="form-group">
+                          <label for="message-text" class="col-form-label">Mật khẩu:</label>
+                          <input class="form-control" name="password" value="{{ Cookie::get('password') }}"type="password">
+                        </div>
+                    </div>
+                    <div class="modal-footer" style="border:none; font-size: 15px;">
+                        <div class="row w-100">
+                            <div class="col-6 m-auto">
+                                <a href="{{ route('register') }}"
+                                class="">Đăng ký |</a>
+                            @if (Route::has('password.request'))
+                            <a href="{{ route('password.request') }}">
+                                {{ __('Quên mật khẩu') }}
+                            </a>
+                            @endif
+                            </div>
+                            <div class="col-6" style="text-align: right;
+                            margin-right: -10px;">
+                                <button type="submit" style="background:#F0564A; border:none;" class="btn btn-primary">Đăng nhập</button>
+                            </form>
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Hủy</button>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+
+
+
+
+
+
+
+            <div class="modal fade" id="login1" tabindex="-1" aria-labelledby="exampleModalLabel"
                 aria-hidden="true" style="font-size: 14px;">
                 <div class="modal-dialog modal-dialog-centered modal-md">
-                    <div class="modal-content">
+                    <div class="modal-content modal-login">
                         <div class="modal-header">
                             <h6 class="modal-title">Đăng nhập</h6>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"

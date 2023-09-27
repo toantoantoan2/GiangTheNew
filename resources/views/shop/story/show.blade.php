@@ -275,11 +275,11 @@
                @php
 			$string = nl2br(e($story->description));
 			$string = str_replace("<br />","<br> <br>",$string);
-			$string = str_replace(". ",". <br> <br>",$string);	
+			$string = str_replace(". ",". <br> <br>",$string);
 		@endphp
                 @if($story->host == 'fanqie')
 			{!! $string !!}
-   
+
                 @elseif($story->host == 'qidian')
                     {!! str_replace("&lt;br&gt;","<br> <br>",$story->description) !!}
                 @else
@@ -296,11 +296,11 @@
 		@php
 			$string = nl2br(e($story->description));
 			$string = str_replace("<br />","<br> <br>",$string);
-			$string = str_replace(". ",". <br> <br>",$string);	
+			$string = str_replace(". ",". <br> <br>",$string);
 		@endphp
                 @if($story->host == 'fanqie')
 			{!! $string !!}
-   
+
                 @elseif($story->host == 'qidian')
                     {!! str_replace("&lt;br&gt;","<br> <br>",$story->description) !!}
                 @else
@@ -406,8 +406,7 @@
     @endif
     @if (!empty(currentUser()->id))
         @php
-            $userOders = \App\Domain\Admin\Models\Order::where('user_id', currentUser()->id)
-                ->where('story_id', $story->id)
+            $userOders = \App\Domain\Admin\Models\Order::where('story_id', $story->id)
                 ->get()
                 ->collect();
         @endphp

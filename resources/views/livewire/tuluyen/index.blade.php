@@ -193,7 +193,23 @@
     <br>
     <div wire:ignore.self class="row d-flex justify-content-center">
         <div class="col-sm-6">
-            <p class="normal-word">Tủ đồ cá nhân</p>
+            <div class="row">
+            <div class="col-5">
+                <p class="normal-word">Tủ đồ cá nhân</p>
+            </div>
+            @php
+                $listID = [];
+            @endphp
+            @foreach ($item_list as $id => $item)
+                @php
+                    array_push($listID, $id);
+
+                @endphp
+            @endforeach
+            <div class="col-6 d-flex justify-content-end">
+                <button onclick="sudungvpall('{{ json_encode($listID) }}')" type="button" class="btn btn-success">Dùng tất cả</button>
+            </div>
+            </div>
             <div class="row" id="ruongvatpham">
                 <!-- vat pham -->
                 {{-- @dd($item_list) --}}
@@ -510,12 +526,14 @@
 
     <script>
 
+function sudungvpall(id) {
+			    Livewire.emit('sudung_vatphamnn', id,1);
+		}
+
 
 		function sudungvp(id) {
-
-
 			$('#im'+id).modal('hide');
-				 Livewire.emit('sudung_vatphamnn', id,1)
+             Livewire.emit('sudung_vatphamnn', id,1);
 
 
 

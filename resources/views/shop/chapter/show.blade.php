@@ -64,6 +64,19 @@
                     style="font-size: 24px;font-weight: 700;color: gray;display: block;text-align: center;">{{ $story->name }}
                 </a>
                 <center class="text-secondary">{{ $chapter->name }}</center>
+                @if (
+                    (currentUser() &&
+                        \App\Domain\Admin\Models\Order::where([
+                            'chapter_id' => @$chapter->id,
+                            'story_id' => $story->id,
+                        ])->first()))
+                @php
+                $userBuy = \App\Domain\Admin\Models\Order::firstWhere('chapter_id',  @$chapter->id)->user_id;
+                $userBuy = \App\User::where('id',$userBuy)->first();
+                $userBuy = $userBuy->name
+                @endphp
+                <center class="text-secondary"> Người mua: {{ $userBuy }}</center>
+                @endif
                 <br>
                 @php
                     if ($chapterNext) {
@@ -85,8 +98,7 @@
                                 @if (
                                     (currentUser() &&
                                         \App\Domain\Admin\Models\Order::where([
-                                            'chapter_id' => @$chapterPre['id'],
-                                            'user_id' => currentUser()->id,
+                                            'chapter_id' => @$chapterPre['id']
                                         ])->first()) ||
                                         $check ||
                                         currentUser()->user_vip == 1)
@@ -121,8 +133,7 @@
                                 @if (
                                     (currentUser() &&
                                         \App\Domain\Admin\Models\Order::where([
-                                            'chapter_id' => @$chapterNext['id'],
-                                            'user_id' => currentUser()->id,
+                                            'chapter_id' => @$chapterNext['id']
                                         ])->first() &&
                                         currentUser()->id) ||
                                         $check ||
@@ -232,8 +243,7 @@
                             @if (
                                 (currentUser() &&
                                     \App\Domain\Admin\Models\Order::where([
-                                        'chapter_id' => @$chapter->id,
-                                        'user_id' => currentUser()->id,
+                                        'chapter_id' => @$chapter->id
                                     ])->first() &&
                                     $chapter->is_vip) ||
                                     !$chapter->is_vip ||
@@ -396,7 +406,6 @@
                                     (currentUser() &&
                                         \App\Domain\Admin\Models\Order::where([
                                             'chapter_id' => @$chapterPre['id'],
-                                            'user_id' => currentUser()->id,
                                         ])->first()) ||
                                         $check)
                                     <a href="{{ $preChapter }}" id="prevchap" class="text-dark"
@@ -442,8 +451,7 @@
                                 @if (
                                     (currentUser() &&
                                         \App\Domain\Admin\Models\Order::where([
-                                            'chapter_id' => @$chapterNext['id'],
-                                            'user_id' => currentUser()->id,
+                                            'chapter_id' => @$chapterNext['id']
                                         ])->first() &&
                                         currentUser()->id) ||
                                         $check)
@@ -563,6 +571,19 @@
                     style="border-top: 1px dashed #eee;border-bottom: 1px dashed #eee;min-height: 300px;padding: 0px;">
                     <div class="chapter-info">
                         <p class="text-secondary">{{ $chapter->name }}</p>
+                        @if (
+                                (currentUser() &&
+                                    \App\Domain\Admin\Models\Order::where([
+                                        'chapter_id' => @$chapter->id,
+                                        'story_id' => $story->id
+                                    ])->first()))
+                        @php
+                        $userBuy = \App\Domain\Admin\Models\Order::firstWhere('chapter_id',  @$chapter->id)->user_id;
+                        $userBuy = \App\User::where('id',$userBuy)->first();
+                        $userBuy = $userBuy->name
+                        @endphp
+                              <p class="text-secondary"> Người mua: {{ $userBuy }}</p>
+                            @endif
                     </div>
                     <div class="contentbox"
                         style="font-family:sans-serif;padding-top: 24px;font-size:20px;">
@@ -570,8 +591,7 @@
                             @if (
                                 (currentUser() &&
                                     \App\Domain\Admin\Models\Order::where([
-                                        'chapter_id' => @$chapter->id,
-                                        'user_id' => currentUser()->id,
+                                        'chapter_id' => @$chapter->id
                                     ])->first() &&
                                     $chapter->is_vip) ||
                                     !$chapter->is_vip ||
@@ -594,8 +614,7 @@
                                 @if (
                                     (currentUser() &&
                                         \App\Domain\Admin\Models\Order::where([
-                                            'chapter_id' => $chapterPre['id'],
-                                            'user_id' => currentUser()->id,
+                                            'chapter_id' => $chapterPre['id']
                                         ])->first() &&
                                         currentUser()->id) ||
                                         $check)
@@ -642,8 +661,7 @@
                                 @if (
                                     (currentUser() &&
                                         \App\Domain\Admin\Models\Order::where([
-                                            'chapter_id' => @$chapterNext['id'],
-                                            'user_id' => currentUser()->id,
+                                            'chapter_id' => @$chapterNext['id']
                                         ])->first() &&
                                         currentUser()->id) ||
                                         $check)
@@ -732,7 +750,7 @@
 </script>
 <hr style="height: 16px; background: #eae4d3; margin-top: 0px;">
 @endif
-                
+
 
             <?php
             $origin = 'faloo';

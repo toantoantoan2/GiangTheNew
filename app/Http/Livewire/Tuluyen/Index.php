@@ -117,45 +117,77 @@ class Index extends Component
 
 
 		);
-
 		$user = auth()->guard('web')->user();
 		$tuluyen = new TuLuyenTraits($user);
 		$players = $tuluyen->get_player();
 		$item = new TuLuyenItems($players);
-		$getitem = $players->get_items()->where('id', $id_item)->first();
+        $listID = json_decode($id_item);
+        if($listID) {
+            for( $i= 0;$i < count($listID); $i++) {
+                $getitem = $players->get_items()->where('id', $listID[$i])->first();
+                if (!$getitem) {
+                    return $this->dispatchBrowserEvent('swal:modal', [
+                        'icon' => 'error',
+                        'text' => "Không tìm thấy vật phẩm",
+                    ]);
+                }
+                $used = $item->use_itemn($getitem, $getitem->stack);
 
-		if (!$getitem) {
-			return $this->dispatchBrowserEvent('swal:modal', [
-				'icon' => 'error',
-				'text' => "Không tìm thấy vật phẩm",
-			]);
-		}
-		if ($count > $getitem->stack) {
-			return $this->dispatchBrowserEvent('swal:modal', [
-				'icon' => 'error',
-				'text' => "Số lượng vật phẩm không đủ",
-			]);
-		}
+                if (!$used) {
+                    return $this->dispatchBrowserEvent('swal:modal', [
+                        'icon' => 'error',
+                        // 'text' => 'Đã thêm '.$point.' điểm thất bại',
+                        'text' => "Sử dụng vật phẩm thất bại",
+                    ]);
+                }
 
-		$used = $item->use_itemn($getitem, $count);
+                $this->players = $tuluyen->get_details();
+                $this->item_list = $tuluyen->get_players_item();
+            }
+
+            return $this->dispatchBrowserEvent('swal:modal', [
+                'icon' => 'success',
+                // 'text' => 'Đã thêm '.$point.' điểm thất bại',
+                'title' => "Sử dụng tất cả vật phẩm thành công",
+            ]);
+
+        }
+        else {
+            $getitem = $players->get_items()->where('id', $id_item)->first();
+            if (!$getitem) {
+                return $this->dispatchBrowserEvent('swal:modal', [
+                    'icon' => 'error',
+                    'text' => "Không tìm thấy vật phẩm",
+                ]);
+            }
+            if ($count > $getitem->stack) {
+                return $this->dispatchBrowserEvent('swal:modal', [
+                    'icon' => 'error',
+                    'text' => "Số lượng vật phẩm không đủ",
+                ]);
+            }
+
+            $used = $item->use_itemn($getitem, $count);
 
 
-		if (!$used) {
-			return $this->dispatchBrowserEvent('swal:modal', [
-				'icon' => 'error',
-				// 'text' => 'Đã thêm '.$point.' điểm thất bại',
-				'text' => "Sử dụng vật phẩm thất bại",
-			]);
-		}
+            if (!$used) {
+                return $this->dispatchBrowserEvent('swal:modal', [
+                    'icon' => 'error',
+                    // 'text' => 'Đã thêm '.$point.' điểm thất bại',
+                    'text' => "Sử dụng vật phẩm thất bại",
+                ]);
+            }
 
-		$this->players = $tuluyen->get_details();
-		$this->item_list = $tuluyen->get_players_item();
-		return $this->dispatchBrowserEvent('swal:modal', [
-			'icon' => 'success',
-			// 'text' => 'Đã thêm '.$point.' điểm thất bại',
-			'title' => "Sử dụng vật phẩm thành công",
-			'text' => $used,
-		]);
+            $this->players = $tuluyen->get_details();
+            $this->item_list = $tuluyen->get_players_item();
+
+            return $this->dispatchBrowserEvent('swal:modal', [
+                'icon' => 'success',
+                // 'text' => 'Đã thêm '.$point.' điểm thất bại',
+                'title' => "Sử dụng vật phẩm thành công",
+                'text' => $used,
+            ]);
+        }
 	}
 	public function resetpoint()
 	{
