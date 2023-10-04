@@ -34,8 +34,9 @@ class PKController
             ->take(100)
             ->get();
 
+        $vinhDanh = Model_charater::with("get_users")->where('vinh_danh',1);
         // dd($rank);
-        return view('pk.index', compact('user', 'player', 'rank', 'thanLongBang'));
+        return view('pk.index', compact('user', 'player', 'rank', 'thanLongBang', 'vinhDanh'));
     }
     /**
      * timDoiThu
@@ -974,6 +975,7 @@ class PKController
                     ($isDate && $player->is_packnew) &&
                     ($isInTop10 && $player->is_packtop) &&
                     ($user->user_vip && $player->is_packvip)
+                    && $player->vinh_danh != 1
                 ) {
                     return response()->json([
                         "status" => "error",

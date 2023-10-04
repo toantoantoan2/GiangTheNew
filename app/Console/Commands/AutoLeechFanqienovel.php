@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\URL;
 
 class AutoLeechFanqienovel extends Command
 {
@@ -39,21 +40,23 @@ class AutoLeechFanqienovel extends Command
      *
      * @return int
      */
+
+
     public function handle()
     {
-        if (setting('is_leech_on_fanqie', false)) {
-            $admin = User::where('id', 16)->first();
-            $baseList = Http::get("https://fanqienovel.com/api/author/library/book_list/v0/?page_count=18&page_index=" . setting_custom('leech_fanqie_page', null,  0))
-                ->json();
-            if ($baseList['code'] == 0) {
-                foreach ($baseList['data']['book_list'] as $datum) {
-                    $url = self::URL . $datum['book_id'];
-                    embedStoryUukanshu($url, '', $admin);
+        $admin = User::where('id', 16)->first();
+        $baseList = Http::timeout(60)->get("https://fanqienovel.com/api/author/library/book_list/v0/?page_count=20&page_index=0&gender=-1&category_id=-1&creation_status=-1&word_count=1&book_type=-1&sort=1")
+            ->json();
+        if ($baseList['code'] == 0) {
+            foreach ($baseList['data']['book_list'] as $datum) {
+                if (setting_custom('fanqie_leech_book_id') == $datum['book_id']) {
+                    break;
                 }
-                if (count($baseList['data']['book_list']) >= 5 ) {
-                    setting_custom('leech_fanqie_page', setting_custom('leech_fanqie_page', null, 0) + 1);
-                }
+                $url = self::URL . $datum['book_id'];
+                embedStoryUukanshu($url, '', $admin);
+                sleep(rand(1, 5));
             }
+            setting_custom('fanqie_leech_book_id', $baseList['data']['book_list'][0]['book_id']);
         }
         return 0;
     }

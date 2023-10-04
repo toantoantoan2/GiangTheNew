@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Http;
 
 class AutoLeechFaloo extends Command
 {
@@ -32,7 +33,7 @@ class AutoLeechFaloo extends Command
         parent::__construct();
     }
 
-    const URL = "https://wap.faloo.com/1";
+    const URL = "https://b.faloo.com/{bookid}.html";
 
     /**
      * Execute the console command.
@@ -41,23 +42,22 @@ class AutoLeechFaloo extends Command
      */
     public function handle()
     {
-        if (setting('is_leech_on_faloo', false)) {
+        $regex =  '#class="TwoBox02_02".*?b\.faloo\.com/(?<bookid>\d+)\.html#';
+        $html = Http::timeout(60)->get("https://b.faloo.com/y_0_0_0_2_0_0_1.html")->body();
+        if (preg_match_all($regex, $html, $matches, PREG_SET_ORDER, 0)) {
             $admin = User::where('id', 16)->first();
-            $count = 0;
-            do {
-                if (Carbon::now()->diffInDays(setting_custom('leech_faloo_last_success_date', null,  Carbon::now())) > 1) {
-                    setting_custom('leech_faloo_book_id', setting_custom('leech_faloo_last_success_id', null,1) + 1);
+            foreach ($matches as $key => $value) {
+                if (setting_custom('faloo_leech_book_id') == $value['bookid']) {
+                    break;
                 }
-                $url = self::URL . sprintf('%06d', setting_custom('leech_faloo_book_id', null, 1)) . '.html';
-                $result = embedStoryUukanshu($url, '', $admin, null, true);
-                if ($result) {
-                    $count++;
-                    setting_custom('leech_faloo_last_success_id', setting_custom('leech_faloo_book_id', null, 1));
-                    setting_custom('leech_faloo_last_success_date', Carbon::now());
-                }
-                setting_custom('leech_faloo_book_id', setting_custom('leech_faloo_book_id', null, 1) + 1);
-            } while ($count < 5 || setting_custom('leech_faloo_book_id', null, 1) - setting_custom('leech_faloo_last_success_id', null, 1) > 1000000);
+                $url = self::URL;
+                $url = str_replace('{bookid}', $value['bookid'], $url);
+                embedStoryUukanshu($url, '', $admin);
+                sleep(rand(1,5));
+            }
+            setting_custom('faloo_leech_book_id', $matches[0]['bookid']);
         }
+
         return 0;
     }
 }

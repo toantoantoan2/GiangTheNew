@@ -1,18 +1,12 @@
 <?php
 
 namespace App\Console;
-
-use App\Console\Commands\AutoLeech69shuba;
-use App\Console\Commands\AutoLeechFaloo;
-use App\Console\Commands\AutoLeechFanqienovel;
-use App\Console\Commands\AutoLeechQimao;
-use App\Console\Commands\AutoLeechTongrenquan;
-use App\Console\Commands\AutoLeechUukanshu;
+// use App\Console\Commands\AutoLeechFaloo;
+// use App\Console\Commands\AutoLeechFanqie;
 use Carbon\Carbon;
 use App\TuLuyen\Model_charater;
 use App\Traits\TuLuyenItems;
 use App\Traits\TuLuyenCfg;
-use App\Console\Commands\VinhDanh;
 use Illuminate\Console\Scheduling\Schedule;
 use App\Console\Commands\UpdateViewDayStory;
 use App\Console\Commands\ResetNominationStory;
@@ -32,13 +26,8 @@ class Kernel extends ConsoleKernel
 		UpdateViewWeekStory::class,
         ResetNominationStory::class,
         ResetOverCount::class,
-        VinhDanh::class,
-		//AutoLeechFaloo::class,
-		//AutoLeechFanqienovel::class,
-        //AutoLeechUukanshu::class,
-       // AutoLeechQimao::class,
-       // AutoLeechTongrenquan::class,
-       // AutoLeech69shuba::class,
+		// AutoLeechFaloo::class,
+		// AutoLeechFanqie::class
 
 	];
 
@@ -57,18 +46,13 @@ class Kernel extends ConsoleKernel
 		$schedule->command('ranking-cron')->monthlyOn(28)->at('00:00');
         $schedule->command('overcount:reset_month')->monthly();
 		$schedule->command('check-bank-transfer')->everyMinute()->withoutOverlapping();
-        $schedule->command('character:vinhdanh')->lastDayOfMonth('23:59');
 		//$schedule->command('leech:faloo')->everyFiveMinutes()->withoutOverlapping();
 		//$schedule->command('leech:fanqienovel')->everyFiveMinutes()->withoutOverlapping();
 		//$schedule->command('leech:uukanshu')->everyFiveMinutes()->withoutOverlapping();
 		//$schedule->command('leech:trxs')->everyFiveMinutes()->withoutOverlapping();
 		//$schedule->command('leech:xinyushuwu')->everyFiveMinutes()->withoutOverlapping();
-		//$schedule->command(AutoLeechFaloo::class)->everyFiveMinutes()->withoutOverlapping()->runInBackground();
-        //$schedule->command(AutoLeechUukanshu::class)->everyFiveMinutes()->withoutOverlapping()->runInBackground();
-        //$schedule->command(AutoLeechQimao::class)->everyFiveMinutes()->withoutOverlapping()->runInBackground();
-       // $schedule->command(AutoLeechTongrenquan::class)->everyFiveMinutes()->withoutOverlapping()->runInBackground();
-        //$schedule->command(AutoLeech69shuba::class)->everyFiveMinutes()->withoutOverlapping()->runInBackground();
-        //$schedule->command(AutoLeechFanqienovel::class)->everyTenMinutes()->withoutOverlapping()->runInBackground();
+		//$schedule->command('autoleech:faloo')->everyFiveMinutes()->withoutOverlapping();
+		//$schedule->command('autoleech:fanqie')->everyFiveMinutes()->withoutOverlapping();
 		// $schedule->command('inspire')->hourly();
 
 		$schedule->call(function () {
@@ -102,7 +86,7 @@ class Kernel extends ConsoleKernel
                 // dd($collect);
                 if ($collect['type'] == 15) {
                     $cfg = new TuLuyenCfg();
-                    $rand_lt = $cfg->random_weight([1 => 100]);
+                    $rand_lt = $cfg->random_weight([1 => 95, 2 => 4, 3 => 1]);
                     $player->update([
                         'linh_thach' => $player->linh_thach + $rand_lt,
                         'is_collect' => false,
@@ -120,12 +104,11 @@ class Kernel extends ConsoleKernel
         })->everyMinute();
 
 
-
         // hàng tháng reset lại tích phân và set top dựa vào tích phân tháng trươc
         $schedule->call(function () {
 
             $top = 1;
-            $players = Model_charater::where("is_pkconfirm",1)->orderByDesc("tichphan")->get();
+            $players = Model_charater::orderByDesc("tichphan")->get();
 
             foreach ($players  as $player) {
                 $tichphan = $player->tichphan;

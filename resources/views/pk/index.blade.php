@@ -73,6 +73,15 @@
                         <p style="margin-bottom: 0.1rem;">- Số tích phân đang có: {{ $player->tichphan }}</p>
                     </div>
                 </div>
+                @include('shop.layouts.partials.ads-pk')
+                <div class="row body-top-pk" style="text-align:left;">
+                    <div class="col-12 mt-3">
+                        <p style="margin-bottom: 0.1rem;">- Cứ sau 30 phút, ấn vào quảng cáo bên trên 1 lần sẽ được thêm 5 lượt PK mới</p>
+                    </div>
+                    <div class="col-12">
+                        <p style="margin-bottom: 0.1rem;">- Lần ấn trước đó: 15 phút</p>
+                    </div>
+                </div>
                 <div class="row body-mid-pk">
                     <div class="col-12">
                         <p> Chế độ PK: Có 2 chế độ Thường và Cao cấp
@@ -355,7 +364,34 @@
                         </div>
                     </div>
                     <hr style="height: 45px; background: #596785; margin-top: 0px;">
-            
+
+                    <div class="row table-than-long" style="">
+                        <button style="margin-top: -36px!important;" type="button" class="btn btn-gt gift than-long-button">Bảng vinh danh
+                        </button>
+                        <div class="col-12" style="padding-left: 0;">
+
+                            @foreach ($vinhDanh as $key => $playerTLB)
+                                <div class="row table-than-long-element">
+
+                                    <div class="col-3 than-long-user">
+                                        <p class="fix-p" style="font-weight:bold;"> {{ $key + 1 }} </p>
+                                        <img src="{{ $playerTLB->get_users->avatar ? pare_url_file($playerTLB->get_users->avatar, 'user') : 'frontend/images/no-user.png' }}"
+                                            alt="" class="comment-avatar" style="margin-left: 0.8rem;" />
+                                    </div>
+                                    <div class="col-7">
+                                        <p class="fix-p" style="font-weight:500;"> {{ $playerTLB->get_users->name }} </p>
+                                    </div>
+                                    <div class="col-2 than-long-user">
+                                        <p class="fix-p" style="font-weight:500;"> {{ $playerTLB->tichphan }} </p>
+                                    </div>
+
+                                </div>
+                            @endforeach
+
+                        </div>
+
+                    </div>
+
 
             <div class="row table-than-long" style="">
                 <button style="margin-top: -36px!important;" type="button" class="btn btn-gt gift than-long-button">Thần
